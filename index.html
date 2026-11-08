@@ -104,16 +104,16 @@ const CONFIG = {
   ],
 
   cases: [
-    { title: "22 минуты до оплаты", who: "мой бот",
+    { title: "22 минуты до оплаты", who: "мой бот", post: 210,
       steps: [["15:56", "человек зашёл в бота"], ["", "познакомился с продуктом"], ["", "посмотрел, что входит, и выбрал тариф"], ["16:18", "оплата"]],
       note: "Без переписок и уговоров. Я в это время занималась другим." },
-    { title: "8 990 ₽ за 18 минут", who: "Threads → бот → оплата",
+    { title: "8 990 ₽ за 18 минут", who: "Threads → бот → оплата", post: 225,
       steps: [["", "пришёл из ветки в Threads"], ["", "бот показал продукт и ответил на вопросы"], ["18 мин", "оплата, переписку я даже не открывала"]] },
-    { title: "Аэлита, куратор", who: "новый продающий бот",
+    { title: "Аэлита, куратор", who: "новый продающий бот", post: 181,
       text: "Прошлый бот клиенты сразу кидали в блок. С новым доходят до оплаты, а тех, кто молчит, догоняют дожимы. За один день купили два «Премиума», а следующим утром ещё «Стандарт»." },
-    { title: "Анна, бот под ключ", who: "оформление и наполнение",
+    { title: "Анна, бот под ключ", who: "оформление и наполнение", post: 206,
       text: "Настроили бота, сделали индивидуальные макеты тарифов, оформили блоки с её достижениями и результатами и подготовили материалы, чтобы всё читалось легко." },
-    { title: "Галина, доработка", who: "бот был, но получалась каша",
+    { title: "Галина, доработка", who: "бот был, но получалась каша", post: 197,
       text: "Галина собирала бота сама и долго с ним мучилась. Я разложила всё по полочкам и переписала простым языком, без сборки с нуля." },
   ],
 
@@ -154,10 +154,10 @@ const CONFIG = {
     introCard: "cards/threads-intro.jpg",
     /* мои результаты в Threads, цифры из постов канала */
     results: [
-      { big: "350", title: "комментариев под одной веткой", text: "24 500 просмотров за сутки, 6 300 переходов в профиль, заявки и первые продажи. Без таргета." },
-      { big: "140 000", title: "просмотров с нуля за месяц", text: "Завела Threads с нуля. За тот же октябрь Telegram вырос с 253 до 450 подписчиков." },
-      { big: "20", title: "человек в бота с одной ветки", text: "Ветка набрала 2 800 просмотров, и двадцать человек сами написали в бота." },
-      { big: "18 мин", title: "от ветки до оплаты 8 990 ₽", text: "Человек пришёл из Threads, зашёл в бота, бот показал продукт и довёл до оплаты. Переписку я даже не открывала." },
+      { big: "350", post: 209, title: "комментариев под одной веткой", text: "24 500 просмотров за сутки, 6 300 переходов в профиль, заявки и первые продажи. Без таргета." },
+      { big: "140 000", post: 218, title: "просмотров с нуля за месяц", text: "Завела Threads с нуля. За тот же октябрь Telegram вырос с 253 до 450 подписчиков." },
+      { big: "20", post: 223, title: "человек в бота с одной ветки", text: "Ветка набрала 2 800 просмотров, и двадцать человек сами написали в бота." },
+      { big: "18 мин", post: 225, title: "от ветки до оплаты 8 990 ₽", text: "Человек пришёл из Threads, зашёл в бота, бот показал продукт и довёл до оплаты. Переписку я даже не открывала." },
     ],
     reviews: [
       { who: "Жанна, участница интенсива", text: "Да, конечно, стало понятно. Выкладываю уже, и просмотры выше, и комментарии пошли 😄 Спасибо, было информативно и понятно." },
@@ -407,6 +407,9 @@ const CONFIG = {
   .tl b { display: block; font-size: 12.5px; letter-spacing: .04em; color: var(--gold-light); }
   .case:not(.dark) .tl b { color: var(--wine); }
   .swipe { font-size: 12.5px; color: var(--muted); }
+  .case[data-url], .t-res[data-url] { cursor: pointer; display: flex; flex-direction: column; }
+  .to-post { margin-top: auto; padding-top: 10px; font-size: 13px; font-weight: 700; color: var(--wine); }
+  .case.dark .to-post, .t-res .to-post { color: var(--gold-light); }
 
   /* ===== Отзывы ===== */
   .reviews { display: flex; gap: 10px; overflow-x: auto; margin: 12px -16px 0; padding: 4px 16px 14px; scroll-snap-type: x mandatory; scrollbar-width: none; }
@@ -532,6 +535,7 @@ function openUrl(url) {
   if (url.startsWith("https://t.me/")) { tg.close(); tg.openTelegramLink(url); }
   else tg.openLink(url);
 }
+function postUrl(n) { return C.channel + "/" + n; }
 function messageUrl(text) { return C.me + "?text=" + encodeURIComponent(text); }
 function markTodos(root) {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -776,12 +780,13 @@ function render() {
 
     <section id="cases">
       <h2>Кейсы <em>моих ботов</em></h2>
-      <p class="swipe">Листай вбок →</p>
+      <p class="swipe">Листай вбок → Нажми на кейс, откроется пост в моём канале</p>
       <div class="cases">
-        ${C.cases.map((k, i) => `<div class="case${i < 2 ? " dark" : ""}">
+        ${C.cases.map((k, i) => `<div class="case${i < 2 ? " dark" : ""}"${k.post ? ` data-url="${esc(postUrl(k.post))}"` : ""}>
           <h3>${esc(k.title)}</h3><div class="who">${esc(k.who)}</div>
           ${k.steps ? `<ul class="tl">${k.steps.map(([time, txt]) => `<li>${time ? `<b>${esc(time)}</b>` : ""}${esc(txt)}</li>`).join("")}</ul>` : ""}
           ${k.text ? `<p>${esc(k.text)}</p>` : ""}${k.note ? `<p>${esc(k.note)}</p>` : ""}
+          ${k.post ? `<span class="to-post">Смотреть пост в канале ↗</span>` : ""}
         </div>`).join("")}
       </div>
     </section>
@@ -822,8 +827,8 @@ function render() {
       <details class="peek t-peek"><summary>Посмотреть карточку ↓</summary><img src="${esc(t.introCard)}" alt="Пишешь в Threads" loading="lazy"></details>
 
       <div class="ladder-title">Мои результаты в Threads</div>
-      <div class="ladder-note">Сама так веду и проверяю на себе. Листай вбок →</div>
-      <div class="t-results">${t.results.map(r => `<div class="t-res"><b>${esc(r.big)}</b><h4>${esc(r.title)}</h4><p>${esc(r.text)}</p></div>`).join("")}</div>
+      <div class="ladder-note">Сама так веду и проверяю на себе. Листай вбок, по нажатию откроется пост в канале.</div>
+      <div class="t-results">${t.results.map(r => `<div class="t-res"${r.post ? ` data-url="${esc(postUrl(r.post))}"` : ""}><b>${esc(r.big)}</b><h4>${esc(r.title)}</h4><p>${esc(r.text)}</p>${r.post ? `<span class="to-post">Смотреть пост ↗</span>` : ""}</div>`).join("")}</div>
 
       <div class="ladder-title">С чего начать</div>
       <div class="ladder-note">От самостоятельного шага до месяца вместе. Нажми, чтобы раскрыть.</div>
