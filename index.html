@@ -148,21 +148,35 @@ const CONFIG = {
     intro: "Пишешь в Threads, ветки набирают просмотры, а в Telegram приходят четыре человека? Я помогаю экспертам и блогерам превращать Threads в источник клиентов. Не публикации ради публикаций, а система: упаковка, контент, охваты, аудитория и заявки.",
     stats: [["100 000", "охвата меньше чем за три недели"], ["350", "комментариев под одной веткой"]],
     forYou: ["охваты есть, а заявок нет", "не знаешь, о чём писать", "не понимаешь, как связать Threads и Telegram", "устала действовать наугад"],
+    introCard: "cards/threads-intro.jpg",
+    /* мои результаты в Threads, цифры из постов канала */
+    results: [
+      { big: "350", title: "комментариев под одной веткой", text: "24 500 просмотров за сутки, 6 300 переходов в профиль, заявки и первые продажи. Без таргета." },
+      { big: "140 000", title: "просмотров с нуля за месяц", text: "Завела Threads с нуля. За тот же октябрь Telegram вырос с 253 до 450 подписчиков." },
+      { big: "20", title: "человек в бота с одной ветки", text: "Ветка набрала 2 800 просмотров, и двадцать человек сами написали в бота." },
+      { big: "18 мин", title: "от ветки до оплаты 8 990 ₽", text: "Человек пришёл из Threads, зашёл в бота, бот показал продукт и довёл до оплаты. Переписку я даже не открывала." },
+    ],
+    reviews: [
+      { who: "Жанна, участница интенсива", text: "Да, конечно, стало понятно. Выкладываю уже, и просмотры выше, и комментарии пошли 😄 Спасибо, было информативно и понятно." },
+      { who: "Мария, участница интенсива", text: "Спасибо тебе большое, что познакомила меня с тредсом. Я раньше вообще не понимала, что там делать, что это за ветки и как их создавать, теперь разобралась." },
+    ],
     steps: [
       { id: "guide", title: "Методичка «Большая база по Threads»", price: "499 ₽", old: "1 190 ₽", short: "Разобраться самой, по шагам",
         details: ["5 форматов постов, после которых идут в шапку", "Разбор шапки по блокам и схема закрепа", "Ошибки, которые режут охваты", "Как вести людей из Threads в Telegram, ВК и другие каналы"],
+        pages: ["cards/threads-guide.jpg", "cards/guide-p2.jpg", "cards/guide-p8.jpg", "cards/guide-p20.jpg"],
+        pagesNote: "22 страницы, 11 глав: от алгоритмов и теневого бана до воронки и продаж в Telegram. Со схемами, примерами веток и местом для своих заметок.",
         button: "Купить методичку", payUrl: "https://link.payform.ru/?paymentLinkId=e8675949-8825-44ce-9b11-59a0692d3cdc", note: "После оплаты доступ придёт на почту. Проверь и папку «Спам»." },
       { id: "razbor", title: "Разбор Threads", price: "3 500 ₽", short: "Смотрю твой аккаунт целиком",
         details: ["Шапка и позиционирование", "Закреп", "Охватные и продающие ветки", "Переходы в Telegram"],
-        result: "На выходе: список слабых мест и конкретные правки, которые можно внести сразу.",
+        result: "На выходе: список слабых мест и конкретные правки, которые можно внести сразу.", card: "cards/threads-razbor.jpg",
         button: "Заказать разбор", message: "Привет! Хочу разбор Threads." },
       { id: "consult", title: "Консультация по Threads", price: "7 000 ₽", short: "Разбираем под твой запрос",
         details: ["Ниша", "Продукт", "Целевая аудитория", "Стратегия"],
-        result: "На выходе: чёткий план на ближайший месяц — что писать, как заходить и куда вести.",
+        result: "На выходе: чёткий план на ближайший месяц — что писать, как заходить и куда вести.", card: "cards/threads-consult.jpg",
         button: "Записаться на консультацию", message: "Привет! Хочу консультацию по Threads." },
       { id: "soprov", title: "Сопровождение по Threads", price: "20 000 ₽", per: "за месяц", short: "Месяц ведём вместе",
         details: ["Упаковываю аккаунт: шапка, позиционирование, закреп, воронка в Telegram", "Собираю контент-план под твою нишу", "Помогаю с ветками: от идеи до сильной подачи", "Разбираю каждую публикацию и статистику", "Настраиваю переход в Telegram и прогрев"],
-        result: "Ты не одна, но действуешь сама: структура, поддержка и результат в течение месяца.",
+        result: "Ты не одна, но действуешь сама: структура, поддержка и результат в течение месяца.", card: "cards/threads-soprov.jpg",
         button: "Записаться на сопровождение", message: "Привет! Сопровождение. Хочу подобрать формат по Threads." },
     ],
   },
@@ -449,6 +463,26 @@ const CONFIG = {
   .step-price s { display: block; font-size: 12px; color: var(--muted); font-weight: 500; }
   .step-price small { display: block; font-size: 11.5px; color: var(--muted); font-weight: 600; }
   .step-more { display: none; padding: 0 14px 14px 58px; cursor: default; }
+  .step-card { display: block; width: calc(100% + 44px); margin: 0 0 12px -44px; border-radius: 14px; box-shadow: 0 8px 18px var(--shadow); }
+  .t-pages { display: flex; gap: 8px; overflow-x: auto; margin: 0 -14px 8px -44px; padding: 2px 14px 8px 0; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .t-pages::-webkit-scrollbar { display: none; }
+  .t-pages img { flex: none; width: 46%; border-radius: 8px; scroll-snap-align: start; box-shadow: 0 6px 14px var(--shadow); border: 1px solid var(--line); }
+  .pages-note { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+  .t-peek summary { color: var(--gold-light); }
+  .t-peek img { border-radius: 16px; }
+  .t-results { display: flex; gap: 10px; overflow-x: auto; margin: 10px -16px 0; padding: 2px 16px 6px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .t-results::-webkit-scrollbar { display: none; }
+  .t-res { flex: none; width: 72%; max-width: 280px; scroll-snap-align: start; border-radius: 18px; padding: 14px; background: rgba(255,255,255,.06); border: 1px solid rgba(230,204,158,.35); }
+  .t-res b { display: block; font-family: "Playfair Display", Georgia, serif; font-size: 30px; line-height: 1; color: var(--gold-light); }
+  .t-res h4 { margin-top: 4px; font-size: 14px; line-height: 1.3; color: #fff; }
+  .t-res p { margin-top: 6px; font-size: 13px; line-height: 1.45; color: rgba(251,241,230,.82); }
+  .t-reviews { display: flex; gap: 10px; overflow-x: auto; margin: 10px -16px 0; padding: 2px 16px 6px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .t-reviews::-webkit-scrollbar { display: none; }
+  .t-review { flex: none; width: 80%; max-width: 320px; scroll-snap-align: start; border-radius: 18px; padding: 14px 16px; background: var(--paper); color: var(--text); }
+  .t-review .q { font-family: "Playfair Display", Georgia, serif; font-size: 44px; line-height: .6; color: var(--gold); height: 18px; }
+  .t-review p { font-size: 14px; }
+  .t-review .who { margin-top: 10px; font-weight: 800; color: var(--wine); font-size: 13.5px; }
+  .btn.gold { margin-top: 16px; background: var(--gold-grad); color: var(--wine-deep); box-shadow: 0 10px 20px rgba(0,0,0,.18); }
   .step.open .step-more { display: block; animation: rise .35s; }
   .step-more .res-line { font-size: 13.5px; font-weight: 600; margin-bottom: 10px; }
   .step-more .pay-note { text-align: left; margin-top: 8px; }
@@ -774,6 +808,12 @@ function render() {
       <p class="intro">${esc(t.intro)}</p>
       <div class="t-stats">${t.stats.map(([x, y]) => `<div><b>${esc(x)}</b><span>${esc(y)}</span></div>`).join("")}</div>
       <div class="for-you"><span class="script">тебе ко мне, если:</span><ul>${t.forYou.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>
+      <details class="peek t-peek"><summary>Посмотреть карточку ↓</summary><img src="${esc(t.introCard)}" alt="Пишешь в Threads" loading="lazy"></details>
+
+      <div class="ladder-title">Мои результаты в Threads</div>
+      <div class="ladder-note">Сама так веду и проверяю на себе. Листай вбок →</div>
+      <div class="t-results">${t.results.map(r => `<div class="t-res"><b>${esc(r.big)}</b><h4>${esc(r.title)}</h4><p>${esc(r.text)}</p></div>`).join("")}</div>
+
       <div class="ladder-title">С чего начать</div>
       <div class="ladder-note">От самостоятельного шага до месяца вместе. Нажми, чтобы раскрыть.</div>
       ${t.steps.map((s, i) => `<div class="step" data-card>
@@ -784,12 +824,19 @@ function render() {
           <div class="step-short">${esc(s.short)}</div>
         </div>
         <div class="step-more">
+          ${s.pages ? `<div class="t-pages">${s.pages.map((src, k) => `<img src="${esc(src)}" alt="Страница методички ${k + 1}" loading="lazy">`).join("")}</div><p class="pages-note">${esc(s.pagesNote)}</p>` : ""}
+          ${s.card ? `<img class="step-card" src="${esc(s.card)}" alt="${esc(s.title)}" loading="lazy">` : ""}
           <ul class="dots">${s.details.map(d => `<li>${esc(d)}</li>`).join("")}</ul>
           ${s.result ? `<p class="res-line">${esc(s.result)}</p>` : ""}
           <button class="btn" data-url="${esc(s.payUrl || messageUrl(s.message))}">${esc(s.button)}</button>
           ${s.note ? `<p class="pay-note">${esc(s.note)}</p>` : ""}
         </div>
       </div>`).join("")}
+
+      <div class="ladder-title">Отзывы по Threads</div>
+      <div class="ladder-note">Пишут девочки после моего интенсива</div>
+      <div class="t-reviews">${t.reviews.map(r => `<div class="t-review"><div class="q">“</div><p>${esc(r.text)}</p><div class="who">${esc(r.who)}</div></div>`).join("")}</div>
+      <button class="btn gold" data-url="${esc(messageUrl("Привет! Хочу развивать Threads. Помоги понять, с чего мне начать?"))}">Не знаю, с чего начать, подскажи</button>
     </section>
 
     <footer>
