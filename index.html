@@ -146,6 +146,14 @@ const CONFIG = {
     message: "Привет! РАЗБОР. Посмотри моего бота, хочу понять, что в нём поправить.",
   },
 
+  /* ---------- Полезное из канала: номер поста, тема, заголовок ---------- */
+  usefulPlace: "end",   // где «Полезное»: end — в конце перед подвалом, cases — после отзывов, split — посты про ботов после отзывов, про Threads внутри блока Threads
+  useful: [
+    { post: 195, tag: "чат-боты", title: "Частые ошибки в чат-ботах, из-за которых уходят клиенты" },
+    { post: 174, tag: "чат-боты", title: "Куда утекают твои клиенты" },
+    { post: 242, tag: "Threads", title: "Твой блог в Threads не продаёт? Вот в чём дело" },
+  ],
+
   /* ---------- Threads ---------- */
   threadsBlock: {
     intro: "Пишешь в Threads, ветки набирают просмотры, а в Telegram приходят четыре человека? Я помогаю экспертам и блогерам превращать Threads в источник клиентов. Не публикации ради публикаций, а система: упаковка, контент, охваты, аудитория и заявки.",
@@ -498,6 +506,20 @@ const CONFIG = {
   .step-more .res-line { font-size: 13.5px; font-weight: 600; margin-bottom: 10px; }
   .step-more .pay-note { text-align: left; margin-top: 8px; }
 
+  /* ===== Полезное ===== */
+  .useful.dark { margin: 0 -16px; padding: 18px 16px 6px; background: #4A101B; color: #FBF1E6; }
+  .useful.dark h2 { color: #fff; font-size: 24px; }
+  .useful.dark h2 em { color: var(--gold-light); }
+  .useful.light .useful-item { background: #fff; border-color: var(--line); color: var(--text); }
+  .useful.light .useful-item span, .useful.light .useful-item i { color: var(--gold); }
+  .useful.light .foot-hint { color: var(--muted); }
+  .useful-list { display: grid; gap: 8px; margin-top: 12px; }
+  .useful-item { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; padding: 12px 14px; border-radius: 16px; background: rgba(255,255,255,.06); border: 1px solid rgba(230,204,158,.35); cursor: pointer; color: #FBF1E6; }
+  .useful-item span { grid-column: 1; font-family: "Playfair Display", Georgia, serif; font-style: italic; font-size: 13.5px; color: var(--gold-light); }
+  .useful-item b { grid-column: 1; font-size: 14.5px; line-height: 1.35; }
+  .useful-item i { grid-column: 2; grid-row: 1 / 3; font-style: normal; font-size: 18px; color: var(--gold-light); }
+  .useful .foot-hint { text-align: center; }
+
   /* ===== Подвал ===== */
   footer { margin: 0 -16px; padding: 22px 16px 10px; background: #4A101B; color: rgba(251,241,230,.85); text-align: center; }
   .foot-photo { width: 74px; height: 74px; border-radius: 50%; object-fit: cover; border: 3px solid var(--paper); box-shadow: 0 0 0 2px var(--gold); }
@@ -536,6 +558,12 @@ function openUrl(url) {
   else tg.openLink(url);
 }
 function postUrl(n) { return C.channel + "/" + n; }
+function usefulHtml(items, look, title) {
+  if (!items.length) return "";
+  const list = `<div class="useful-list">${items.map(u => `<a class="useful-item" data-url="${esc(postUrl(u.post))}"><span>${esc(u.tag)}</span><b>${esc(u.title)}</b><i>↗</i></a>`).join("")}</div>`;
+  if (look === "inner") return `<div class="ladder-title">Полезное про Threads</div><div class="ladder-note">Пост откроется в канале ↗</div>${list}`;
+  return `<section class="useful ${look}" id="useful"><h2>${title}</h2>${list}<p class="foot-hint">Откроются в канале ↗</p></section>`;
+}
 function messageUrl(text) { return C.me + "?text=" + encodeURIComponent(text); }
 function markTodos(root) {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -730,6 +758,7 @@ function serviceCard(s) {
 
 function render() {
   const h = C.hero, b = C.baza, t = C.threadsBlock;
+  const place = new URLSearchParams(location.search).get("useful") || C.usefulPlace;
   document.getElementById("app").innerHTML = `
     <header class="hero">
       <h1>${esc(h.title)} <em>${esc(h.titleAccent)}</em></h1>
@@ -752,6 +781,7 @@ function render() {
       <a class="chip" data-go="reviews">Отзывы</a>
       <a class="chip" data-go="baza">База</a>
       <a class="chip" data-go="threads">Threads</a>
+      <a class="chip" data-go="useful">Полезное</a>
     </nav>
 
     <section id="build">
@@ -796,6 +826,8 @@ function render() {
       <p class="swipe">Листай вбок →</p>
       <div class="reviews">${C.reviews.map(r => `<div class="review"><div class="q">“</div><p>${esc(r.text)}</p><div class="who">${esc(r.who)}</div></div>`).join("")}</div>
     </section>
+    ${place === "cases" ? usefulHtml(C.useful, "light", "Полезное <em>из канала</em>") : ""}
+    ${place === "split" ? usefulHtml(C.useful.filter(u => u.tag !== "Threads"), "light", "Полезное <em>про ботов</em>") : ""}
 
     <section id="baza">
       <h2>${esc(b.title).replace("чат-ботам", "<em>чат-ботам</em>")}</h2>
@@ -830,6 +862,7 @@ function render() {
       <div class="ladder-note">Сама так веду и проверяю на себе. Листай вбок, по нажатию откроется пост в канале.</div>
       <div class="t-results">${t.results.map(r => `<div class="t-res"${r.post ? ` data-url="${esc(postUrl(r.post))}"` : ""}><b>${esc(r.big)}</b><h4>${esc(r.title)}</h4><p>${esc(r.text)}</p>${r.post ? `<span class="to-post">Смотреть пост ↗</span>` : ""}</div>`).join("")}</div>
 
+      ${place === "split" ? usefulHtml(C.useful.filter(u => u.tag === "Threads"), "inner", "") : ""}
       <div class="ladder-title">С чего начать</div>
       <div class="ladder-note">От самостоятельного шага до месяца вместе. Нажми, чтобы раскрыть.</div>
       ${t.steps.map((s, i) => `<div class="step" data-card>
@@ -854,6 +887,8 @@ function render() {
       <div class="t-reviews">${t.reviews.map(r => `<div class="t-review"><div class="q">“</div><p>${esc(r.text)}</p><div class="who">${esc(r.who)}</div></div>`).join("")}</div>
       <button class="btn gold" data-url="${esc(messageUrl("Привет! Хочу развивать Threads. Помоги понять, с чего мне начать?"))}">Не знаю, с чего начать, подскажи</button>
     </section>
+
+    ${place === "end" ? usefulHtml(C.useful, "dark", "Полезное <em>из канала</em>") : ""}
 
     <footer>
       <img class="foot-photo" src="photo.jpg" alt="${esc(h.name)}">
