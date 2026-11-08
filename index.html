@@ -99,7 +99,8 @@ const CONFIG = {
       ask: "Привет! Интересует бот для лид-магнита, расскажи подробнее." },
     { id: "fix", title: "Доработка готового бота", sub: "если бот есть, но не продаёт", from: "2 000 ₽",
       text: "Не всегда нужно делать бота с нуля. Иногда достаточно пересмотреть цепочку сообщений, поменять сценарий продаж, добавить нужные кнопки и сделать путь к покупке понятнее.",
-      ask: "Привет! У меня есть бот, хочу его доработать." },
+      before: "Перед доработкой я смотрю твоего бота: логику, цепочку сообщений и путь к оплате, и говорю, что именно поправлю. Это входит в услугу.",
+      ask: "Привет! У меня есть бот, хочу его доработать. Пришлю ссылку, посмотришь?" },
   ],
 
   cases: [
@@ -136,12 +137,6 @@ const CONFIG = {
     payNote: "После оплаты доступ придёт на почту. Проверь и папку «Спам».",
   },
 
-  audit: {
-    title: "Бот есть, но не продаёт?",
-    text: "Посмотрю твоего бота бесплатно: логику, цепочку сообщений и путь к оплате. Скажу, где ты теряешь людей и что поправить в первую очередь.",
-    button: "Хочу разбор бота",
-    message: "Привет! РАЗБОР. Хочу бесплатный разбор моего бота.",
-  },
 
   /* ---------- Threads ---------- */
   threadsBlock: {
@@ -428,14 +423,6 @@ const CONFIG = {
   details.peek summary::-webkit-details-marker { display: none; }
   details.peek img { display: block; width: 100%; border-radius: 14px; margin-top: 10px; }
 
-  /* ===== Разбор ===== */
-  .audit { margin-top: 34px; padding: 18px 16px; border-radius: 24px; background: linear-gradient(140deg, #FFFFFF 0%, #F5E7DA 100%); border: 1.5px solid var(--gold-light); display: grid; grid-template-columns: 56px 1fr; gap: 12px; align-items: start; }
-  .audit .gift { width: 56px; height: 56px; border-radius: 18px; background: var(--btn); display: grid; place-items: center; box-shadow: 0 8px 16px rgba(86,19,32,.25); }
-  .audit .gift svg { width: 30px; height: 30px; }
-  .audit h3 { font-family: "Playfair Display", Georgia, serif; font-size: 20px; color: var(--wine-deep); line-height: 1.2; }
-  .audit .free { font-family: "Playfair Display", Georgia, serif; font-style: italic; color: var(--gold); font-size: 16px; }
-  .audit p { font-size: 14px; margin-top: 4px; }
-  .audit .btn { grid-column: 1 / -1; margin-top: 4px; }
 
   /* ===== Threads ===== */
   .threads { margin: 40px -16px 0; padding: 26px 16px 22px; background: linear-gradient(170deg, #6E1A28 0%, #4A101B 100%); color: #FBF1E6; border-radius: 30px 30px 0 0; }
@@ -634,10 +621,10 @@ function renderResult() {
       <div class="res-head"><small>тебе подойдёт</small><b>Доработка готового бота</b><div class="res-price"><strong>${esc(f.from)}</strong></div></div>
       <div class="res-body">
         <p style="font-size:14px">${esc(f.text)}</p>
-        <div class="upsell">Не уверена, что именно не так? Начни с <b>бесплатного разбора</b>: посмотрю бота и скажу, что поправить в первую очередь.</div>
+        <div class="upsell">${esc(f.before)}</div>
         <div class="res-btns">
           <button class="btn" data-url="${esc(messageUrl(f.ask))}">Хочу доработать бота</button>
-          <button class="btn ghost" data-url="${esc(messageUrl(C.audit.message))}">Сначала бесплатный разбор</button>
+          <button class="btn ghost" data-url="${esc(messageUrl(C.builder.voiceMessage))}">Не уверена, объясни голосом</button>
         </div>
       </div></div>`;
     markTodos(box);
@@ -709,6 +696,7 @@ function serviceCard(s) {
     <div class="service-more">
       ${s.card ? `<img src="${esc(s.card)}" alt="${esc(s.title)}" loading="lazy">` : ""}
       <p>${esc(s.text)}</p>
+      ${s.before ? `<div class="upsell" style="margin:0 0 12px">${esc(s.before)}</div>` : ""}
       ${s.options ? `<div class="opts">${s.options.map(o => `<div class="opt"><span>${esc(o[0])}</span><b>${o[1] ? `<s>${esc(o[1])}</s>` : ""}${esc(o[2])}</b></div>`).join("")}</div>` : ""}
       <button class="btn" data-url="${esc(messageUrl(s.ask))}">Написать про этот бот</button>
     </div>
@@ -797,11 +785,6 @@ function render() {
       </div>
     </section>
 
-    <div class="audit" id="audit">
-      <div class="gift">${icon("giftBig", "0 0 32 32")}</div>
-      <div><span class="free">бесплатно</span><h3>${esc(C.audit.title)}</h3><p>${esc(C.audit.text)}</p></div>
-      <button class="btn" data-url="${esc(messageUrl(C.audit.message))}">${esc(C.audit.button)}</button>
-    </div>
 
     <section class="threads" id="threads">
       <h2>А ещё я привожу клиентов <em>из Threads</em></h2>
