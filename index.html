@@ -138,6 +138,14 @@ const CONFIG = {
   },
 
 
+  audit: {
+    title: "Бот есть, но не продаёт?",
+    text: "Посмотрю твоего бота бесплатно: логику, цепочку сообщений и путь к оплате. Покажу, где теряются люди.",
+    next: [["Доработка", "если бота можно поправить, доработаю за 2 000 ₽"], ["Новый бот", "если старого проще собрать заново, подберу тариф"]],
+    button: "Хочу разбор бота",
+    message: "Привет! РАЗБОР. Посмотри моего бота, хочу понять, что в нём поправить.",
+  },
+
   /* ---------- Threads ---------- */
   threadsBlock: {
     intro: "Пишешь в Threads, ветки набирают просмотры, а в Telegram приходят четыре человека? Я помогаю экспертам и блогерам превращать Threads в источник клиентов. Не публикации ради публикаций, а система: упаковка, контент, охваты, аудитория и заявки.",
@@ -423,6 +431,19 @@ const CONFIG = {
   details.peek summary::-webkit-details-marker { display: none; }
   details.peek img { display: block; width: 100%; border-radius: 14px; margin-top: 10px; }
 
+
+  /* ===== Разбор ===== */
+  .audit { margin-top: 34px; padding: 18px 16px; border-radius: 24px; background: linear-gradient(140deg, #FFFFFF 0%, #F5E7DA 100%); border: 1.5px solid var(--gold-light); display: grid; grid-template-columns: 56px 1fr; gap: 12px; align-items: start; }
+  .audit .gift { width: 56px; height: 56px; border-radius: 18px; background: var(--btn); display: grid; place-items: center; box-shadow: 0 8px 16px rgba(86,19,32,.25); }
+  .audit .gift svg { width: 30px; height: 30px; }
+  .audit h3 { font-family: "Playfair Display", Georgia, serif; font-size: 20px; color: var(--wine-deep); line-height: 1.2; }
+  .audit .free { font-family: "Playfair Display", Georgia, serif; font-style: italic; color: var(--gold); font-size: 16px; }
+  .audit p { font-size: 14px; margin-top: 4px; }
+  .audit-next { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .audit-next span { grid-column: 1 / -1; font-size: 13px; font-weight: 700; color: var(--muted); }
+  .audit-next div { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 9px 10px; font-size: 12.5px; line-height: 1.35; color: var(--muted); }
+  .audit-next b { display: block; color: var(--wine); font-size: 14px; margin-bottom: 2px; }
+  .audit .btn { grid-column: 1 / -1; margin-top: 4px; }
 
   /* ===== Threads ===== */
   .threads { margin: 40px -16px 0; padding: 26px 16px 22px; background: linear-gradient(170deg, #6E1A28 0%, #4A101B 100%); color: #FBF1E6; border-radius: 30px 30px 0 0; }
@@ -785,6 +806,13 @@ function render() {
       </div>
     </section>
 
+
+    <div class="audit" id="audit">
+      <div class="gift">${icon("giftBig", "0 0 32 32")}</div>
+      <div><span class="free">бесплатно</span><h3>${esc(C.audit.title)}</h3><p>${esc(C.audit.text)}</p></div>
+      <div class="audit-next"><span>После разбора предложу, что делать дальше:</span>${C.audit.next.map(([x, y]) => `<div><b>${esc(x)}</b>${esc(y)}</div>`).join("")}</div>
+      <button class="btn" data-url="${esc(messageUrl(C.audit.message))}">${esc(C.audit.button)}</button>
+    </div>
 
     <section class="threads" id="threads">
       <h2>А ещё я привожу клиентов <em>из Threads</em></h2>
